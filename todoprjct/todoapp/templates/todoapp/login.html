@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Todo App</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .login-container {
+            width: 100%;
+            max-width: 400px;
+            padding: 20px;
+        }
+        .card {
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            border: none;
+        }
+        .card-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 15px 15px 0 0;
+            padding: 30px;
+            text-align: center;
+        }
+        .card-header h2 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .card-header p {
+            margin: 10px 0 0 0;
+            opacity: 0.9;
+        }
+        .card-body {
+            padding: 40px;
+        }
+        .form-group label {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+        .form-control {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 12px 15px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+        .form-control:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        }
+        .form-check {
+            margin-bottom: 20px;
+        }
+        .form-check-input {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            margin-top: 4px;
+        }
+        .form-check-label {
+            margin-left: 8px;
+            cursor: pointer;
+            color: #666;
+            font-weight: 500;
+        }
+        .forgot-password {
+            text-align: right;
+            margin-bottom: 20px;
+        }
+        .forgot-password a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        .forgot-password a:hover {
+            text-decoration: underline;
+        }
+        .btn-login {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            color: white;
+            font-weight: bold;
+            padding: 12px 20px;
+            border-radius: 25px;
+            font-size: 16px;
+            width: 100%;
+            transition: transform 0.2s;
+        }
+        .btn-login:hover {
+            background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+            color: white;
+            transform: translateY(-2px);
+        }
+        .signup-link {
+            text-align: center;
+            margin-top: 20px;
+            color: #666;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+        .signup-link a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .signup-link a:hover {
+            text-decoration: underline;
+        }
+        .alert {
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .error-message {
+            color: #dc3545;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+        .divider {
+            text-align: center;
+            margin: 25px 0;
+            position: relative;
+            color: #999;
+        }
+        .logo {
+            font-size: 48px;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="card">
+            <div class="card-header">
+                <div class="logo">📝</div>
+                <h2>Welcome Back</h2>
+                <p>Sign in to your account</p>
+            </div>
+            <div class="card-body">
+                {% for message in messages %}
+                    {% if message.tags == "error" %}
+                        <h5 style="color:#dc3545;">{{ message }}</h5>
+                    {% elif message.tags == "success" %}
+                        <h5 style="color:#2c4d1c;">{{ message }}</h5>
+                    {% endif %}
+                {% endfor %}
+                <form method="POST" action="{% url 'login' %}" novalidate onsubmit="return validateLogin(event)">
+                    {% csrf_token %}
+                    <!-- Username/Email -->
+                    <div class="form-group">
+                        <label for="username">Username or Email</label>
+                        <input 
+                            type="text" 
+                            class="form-control" 
+                            id="username" 
+                            name="username" 
+                            placeholder="Enter your username or email" 
+                            required
+                            autofocus>
+                    </div>
+
+                    <!-- Password -->
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input 
+                            type="password" 
+                            class="form-control" 
+                            id="password" 
+                            name="password" 
+                            placeholder="Enter your password" 
+                            required>
+                    </div>
+
+                    <!-- Remember Me Checkbox -->
+                    <div class="form-check">
+                        <input 
+                            class="form-check-input" 
+                            type="checkbox" 
+                            id="rememberMe" 
+                            name="remember_me">
+                        <label class="form-check-label" for="rememberMe">
+                            Remember me
+                        </label>
+                    </div>
+
+                    <!-- Forgot Password Link -->
+                    <div class="forgot-password">
+                        <a href="/forgot-password">Forgot your password?</a>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" class="btn btn-login">Sign In</button>
+                </form>
+
+                <!-- Signup Link -->
+                <div class="signup-link">
+                    Don't have an account? <a href="/register">Create one now</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        function validateLogin(event) {
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value.trim();
+            
+            if (!username || !password) {
+                alert('Please fill in all fields!');
+                event.preventDefault();
+                return false;
+            }
+            
+            return true;
+        }
+    </script>
+</body>
+</html>
